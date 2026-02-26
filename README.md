@@ -1,14 +1,13 @@
 # PROBLEMA EMPRESARIAL
-Visão do produto: descrição bem objetiva do produto
+Fazer um aplicativo Mobile que gerencie o estoque e controle de nota fiscal
 
 ## PROBLEMA
-Especificar o problema ou a situação que motiva a criação do produto
+A dona da Loja, encontra dificuldade em consultar os gastos dos produtos, e não possui controle sobre suas vendas/gastos.
 
 ## PÚBLICO
-Denominar o público alvo do produto, quem ele atingi ou 
+Colaborador da empresa(Funcionários)
 
 ## OBJETIVO
-Colocar os objetivos do produto
 
 - Objetivo 1
 
