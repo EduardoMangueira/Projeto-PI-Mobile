@@ -1,10 +1,16 @@
 ## Requisitos Não Funcionais (RNF)
 
-### RNF01 — Tempo de resposta
-O sistema deve carregar telas principais em até **2 segundos**.
+### RNF01 — Horário do relátorio
+O relátório final, deve ser disponibilizado para o dono, até 12h de uma Segunda-feira.
 
-### RNF02 — Segurança
-As senhas devem ser armazenadas usando hash seguro (ex.: bcrypt).
+### RNF02 — Transcrição
+A IA deve analisar a venda em até 10 segundos.
 
-### RNF03 — Compatibilidade
-O sistema deve funcionar nos navegadores Chrome, Edge e Firefox.
+### RNF03 — Atualização da Dashboard
+A Dashboard, deve ser atualizada a cada venda, ou de 2 em 2 horas(Estamos em dúvida).
+
+### RNF04 - Segurança do Banco
+O banco de dados deve haver um Backup automático, para não perder os dados financeiros e de estoque.
+
+### RNF 05 - Modo Offline
+O controle de estoque deve funcionar, mesmo sem internet, mesmo que a iA não consiga computar a venda.
