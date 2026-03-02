@@ -3,10 +3,10 @@
 ### RF01 — Login do usuário
 O sistema deve permitir que o funcionário realize login com usuário e senha própria, criados pela dona da loja.
 
-### RF02  Quantidade no Estoque — 
+### RF02 - Quantidade no Estoque 
 O sistema tem que deixar o usuário alterar a quantidade de estoque existente, permitindo adicionar ou subtrair a quantidade de um item especifico.
 
-### RF03 Baixa Automática no estoque —
+### RF03 - Baixa Automática no estoque
 Sistema deve registrar automáticamente quando houver uma venda, diminuindo a quantidade no estoque no estoque.
 
 ### RF04 - Calculo de Lucro
