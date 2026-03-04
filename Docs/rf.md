@@ -7,7 +7,7 @@ O sistema deve permitir que o funcionário realize login com usuário e senha pr
 O sistema tem que deixar o usuário alterar a quantidade de estoque existente, permitindo adicionar ou subtrair a quantidade de um item especifico.
 
 ### RF03 - Baixa Automática no estoque
-Sistema deve registrar automáticamente quando houver uma venda, diminuindo a quantidade no estoque no estoque.
+Sistema deve registrar automáticamente quando houver uma venda, diminuindo a quantidade no estoque.
 
 ### RF04 - Calculo de Lucro
 O sitema deve armazenar a regra de negócio, para colocar no relátório final.
