@@ -24,6 +24,6 @@ O Aplicativo irá ter as seguintes funcionalidades:
 - Adicionar ou excluir produtos
 - Banco de Dados com os Produtos e insumos finais
 
-- ## ODS 12 (Sustentabilidade)
+- # ODS 12 (Sustentabilidade)
 O sistema alinha-se com a ODS 12 ao realizar o controle dos insumos, como tintas e papéis via IA, evitando o desperdício de material.
   
