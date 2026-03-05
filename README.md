@@ -20,7 +20,7 @@ O Aplicativo irá ter as seguintes funcionalidades:
 - Controle de Estoque
 - Dashboard Diário
 - Transcrição de Vendas com IA
-- Relatório Semanal
+- Relatório Mensal
 - Adicionar ou excluir produtos
 - Banco de Dados com os Produtos e insumos finais
 
