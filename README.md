@@ -7,12 +7,14 @@ A dona da loja encontra dificuldade em consultar os gastos dos produtos, e não 
 ## PÚBLICO
 Colaboradores da empresa (Dona e Funcionários).
 
-## 📝 Backlog
+## 📝 Backlog de Épicos
 - [ ] Criação do Banco de Dados para produtos finais e insumos(custos) -> planilha.
-- [ ] Implementar a regra de negócio(insumos + custo total -> Venda - > Lucro).
 - [ ] Desenvolver a Dashboard com os dados principais.
-- [ ] Iniciar processo de integração da API de LLM.
+- [ ] Contagem do estoque para adição no banco. 
+- [ ] Implementar a regra de negócio(insumos + custo total -> Venda - > Lucro).
 - [ ] Página de login (Usuário e Senha).
+- [ ] Iniciar processo de integração da API de LLM.
+- [ ] Inclusão de funcionalidade para adição manual de notas.
 
 - # Projeto Final
 O Aplicativo irá ter as seguintes funcionalidades:
