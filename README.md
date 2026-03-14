@@ -5,7 +5,7 @@ O projeto a ser realizado é de um aplicativo Mobile utilizando ferramentas de I
 A dona da loja encontra dificuldade em consultar os gastos dos produtos, e não possui controle sobre suas vendas, lucros, gastos e insumos em estoque.
 
 ## PÚBLICO
-Colaboradores da empresa (Dona e Funcionários).
+O proprietário da empresa de sublimação.
 
 ## 📝 Backlog de Épicos
 - [ ] Criação do Banco de Dados para produtos finais e insumos(custos) -> planilha.
