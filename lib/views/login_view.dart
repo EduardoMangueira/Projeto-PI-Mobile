@@ -1,8 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../viewmodels/login_viewmodel.dart';
 
-class TelaLogin extends StatelessWidget {
+class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
+
+  @override
+  State<TelaLogin> createState() => _TelaLoginState();
+}
+
+class _TelaLoginState extends State<TelaLogin> {
+  final LoginViewModel _viewModel = LoginViewModel();
+  final TextEditingController _usuarioController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+
+  bool _isLoading = false;
+
+  void _realizarLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    bool sucesso = await _viewModel.fazerLogin(
+      _usuarioController.text,
+      _senhaController.text,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (!mounted) return;
+
+    if (sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login realizado com sucesso!'), backgroundColor: Colors.green),
+      );
+      // navega para a tela home
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário ou senha incorretos.'), backgroundColor: Colors.red),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +55,20 @@ class TelaLogin extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF66686A), 
-              Color(0xFF202225),
+              Color(0xFF1B1228), 
+              Color(0xFF08080C), 
             ],
+            stops: [0.44, 0.92], 
           ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 40.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50), 
-                // CONTÊINER PROVISÓRIO (Fingindo a foto/logo)
-                // Image.asset('assets/images/logo.png', height: 160)
+                const SizedBox(height: 70),
+
+                // LOGO
                 Container(
                   width: 160, 
                   height: 160,
@@ -63,11 +103,15 @@ class TelaLogin extends StatelessWidget {
                 
                 const SizedBox(height: 70),
 
+                // CAMPO USUÁRIO
                 TextField(
+                  controller: _usuarioController,
                   style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Usuário',
                     labelStyle: const TextStyle(color: Color(0xFF505050)), 
+                    // Essa linha faz o texto sumir ao clicar no campo:
+                    floatingLabelBehavior: FloatingLabelBehavior.never, 
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
@@ -82,11 +126,14 @@ class TelaLogin extends StatelessWidget {
 
                 // CAMPO SENHA 
                 TextField(
+                  controller: _senhaController,
                   obscureText: true, 
                   style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Senha',
                     labelStyle: const TextStyle(color: Color(0xFF505050)),
+                    // Essa linha faz o texto sumir ao clicar no campo:
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
@@ -101,60 +148,71 @@ class TelaLogin extends StatelessWidget {
 
                 // LINK ESQUECI MINHA SENHA 
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: GestureDetector(
-                    onTap: () {
-                    },
+                    onTap: () => _viewModel.recuperarSenha(context), 
                     child: const Text(
                       'Esqueci minha senha',
                       style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
+                        color: Colors.white,
+                        fontSize: 12,
                         decoration: TextDecoration.underline, 
                       ),
                     ),
                   ),
                 ),
                 
-                const SizedBox(height: 40), 
+                const SizedBox(height: 80), 
 
-                // BOTÃO LOGIN 
-                SizedBox(
-                  width: double.infinity,
-                  height: 60, 
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF7E236C), 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15), 
+                // BOTÃO LOGIN
+                GestureDetector(
+                  onTap: _isLoading ? null : _realizarLogin,
+                  child: Container(
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF6A1B5A), 
+                          Color(0xFF3E1035), 
+                        ],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
                       ),
-                      elevation: 5, 
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      // Ação de login 
-                    },
-                    child: Text(
-                      'LOGIN',
-                      style: GoogleFonts.poppins( 
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Center(
+                      child: _isLoading 
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'LOGIN',
+                              style: GoogleFonts.poppins( 
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ),
                 
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
 
                 // LINK CADASTRE-SE 
                 GestureDetector(
-                  onTap: () {
-                  },
+                  onTap: () => _viewModel.irParaCadastro(context),
                   child: const Text(
                     'Ainda não tem uma conta? Cadastre-se.',
                     style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
+                      color: Colors.white,
+                      fontSize: 12,
                       decoration: TextDecoration.underline,
                     ),
                   ),

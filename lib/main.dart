@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'splash.dart'; 
+import 'views/splash_view.dart'; 
 
 void main() {
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: Splash(),
+    home: SplashView(), 
   ));
 }
