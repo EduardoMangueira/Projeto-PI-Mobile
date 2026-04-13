@@ -1,6 +1,6 @@
 ## Requisitos Não Funcionais (RNF)
 
-### RNF01 — Horário do relátorio
+### RNF01 — Horário do Relátorio
 O relátório final, deve ser disponibilizado para o dono, até 12h de uma Segunda-feira.
 
 ### RNF02 — Transcrição
