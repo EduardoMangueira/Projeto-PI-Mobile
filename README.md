@@ -8,12 +8,12 @@ A dona da loja encontra dificuldade em consultar os gastos dos produtos, e não 
 O proprietário da empresa de sublimação.
 
 ## 📝 Backlog de Épicos
-- [ ] Criação do Banco de Dados para produtos finais e insumos(custos) -> planilha.
+- [x] Criação do Banco de Dados para produtos finais e insumos(custos).
 - [ ] Desenvolver a Dashboard com os dados principais.
 - [ ] Contagem do estoque para adição no banco. 
 - [ ] Implementar a regra de negócio(insumos + custo total -> Venda - > Lucro).
-- [ ] Página de login (Usuário e Senha).
-- [ ] Iniciar processo de integração da API de LLM.
+- [x] Página de login (Usuário e Senha).
+- [x] Iniciar processo de integração da API de LLM.
 - [ ] Inclusão de funcionalidade para adição manual de notas.
 
 - # Projeto Final
