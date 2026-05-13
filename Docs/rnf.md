@@ -17,3 +17,27 @@ O controle de estoque deve funcionar, mesmo sem internet, mesmo que a IA não co
 
 ### RNF 06 — Alerta de Estoque Mínimo
 O sistema deve alertar o usuário quando um produto atingir ou ficar abaixo do estoque mínimo cadastrado.
+
+### RNF07 — Tempo de Resposta da Interface
+O sistema deve reagir aos comandos do usuário (troca de telas, clique em botões) em no máximo 2 segundos, garantindo uma navegação fluida.
+
+### RNF08 — Disponibilidade (Uptime)
+O sistema deve estar disponível para uso em 99% do tempo, garantindo que o proprietário consiga registrar vendas em qualquer horário comercial.
+
+### RNF09 — Escalabilidade do Banco de Dados
+O banco de dados deve ser capaz de suportar o armazenamento de até 10.000 registros de vendas sem perda de performance na geração de relatórios.
+
+### RNF10 — Criptografia de Dados Sensíveis
+As senhas dos usuários devem ser armazenadas no banco de dados utilizando algoritmos de hash/criptografia, impedindo que sejam lidas mesmo em caso de vazamento de dados.
+
+RNF11 — Autenticação de Sessão
+O sistema deve manter o usuário logado com segurança, mas exigir nova autenticação caso o app fique inativo ou seja reinstalado, protegendo os dados financeiros.
+
+### RNF12 — Responsividade e Adaptabilidade
+A interface do aplicativo deve ser adaptável a diferentes tamanhos de tela e resoluções de smartphones (Android e iOS), sem quebrar o layout das Dashboards.
+
+### RNF13 — Facilidade de Aprendizado (Usabilidade)
+Um usuário novo deve ser capaz de realizar uma venda ou consultar o estoque em menos de 3 minutos de interação, sem necessidade de ler um manual técnico.
+
+### RNF14 — Precisão da Transcrição
+A integração com a API de IA deve garantir uma taxa de assertividade na conversão de áudio para texto de, no mínimo, 85% em ambientes com ruído moderado (comum em oficinas de sublimação).
