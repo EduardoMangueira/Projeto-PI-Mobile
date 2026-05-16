@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'views/splash_view.dart'; 
+import 'package:firebase_core/firebase_core.dart';
+import 'app/app_widget.dart';
 
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SplashView(), 
-  ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); 
+  
+  await Firebase.initializeApp(); 
+
+  runApp(const AppWidget());
 }
