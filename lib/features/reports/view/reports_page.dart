@@ -2,14 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../shared/view/stock_app_bar.dart';
-import '../viewmodel/reports_viewmodel.dart';
+
+import '../../sales/viewmodel/sales_viewmodel.dart';
+import '../../inventory/viewmodel/inventory_viewmodel.dart';
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<ReportsViewModel>();
+    final salesVm = context.watch<SalesViewModel>();
+    final invVm = context.watch<InventoryViewModel>();
+
+    //CÁLCULOS DO LUCRO TOTAL
+    final lucroTotal = salesVm.lucroLiquido;
+    final variacao = salesVm.margemLucro > 0 ? (salesVm.margemLucro / 2) : 0.0;
+
+    int totalItensEstoque = invVm.produtos.fold(0, (sum, item) => sum + item.quantidadeAtual);
+    
+    double valorInvestidoEstoque = invVm.produtos.fold(
+      0.0, (sum, item) => sum + (item.quantidadeAtual * item.precoCompra)
+    );
+    
+    double lucroProjetado = invVm.produtos.fold(
+      0.0, (sum, item) => sum + (item.quantidadeAtual * (item.precoVenda - item.precoCompra))
+    );
+
+    List<Map<String, String>> insightsGerados = [];
+    
+    final produtosAvisos = invVm.produtos.where((p) => p.estoqueCritico).toList();
+    if (produtosAvisos.isNotEmpty) {
+      insightsGerados.add({
+        'titulo': 'ALERTA DE RUPTURA',
+        'descricao': 'Você tem ${produtosAvisos.length} produtos prestes a esgotar. Reponha o estoque para não perder vendas nesta semana.'
+      });
+    } else {
+      insightsGerados.add({
+        'titulo': 'ESTOQUE SAUDÁVEL',
+        'descricao': 'Nenhum produto em nível crítico. Seu estoque está perfeitamente balanceado para a demanda atual.'
+      });
+    }
+
+    if (salesVm.margemLucro > 30) {
+      insightsGerados.add({
+        'titulo': 'ALTA RENTABILIDADE',
+        'descricao': 'Sua margem de lucro atual é de ${salesVm.margemLucro.toStringAsFixed(1)}%. Excelente desempenho comercial nas vendas recentes!'
+      });
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFF08080C),
@@ -28,6 +67,7 @@ class ReportsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
+            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -41,12 +81,12 @@ class ReportsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                    Text(
-                    'Lucro Total',
+                    'Lucro Total Líquido',
                     style: GoogleFonts.aoboshiOne (color: const Color(0xFFBDBABA), fontSize: 13),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'R\$ ${vm.lucroTotal.toStringAsFixed(2)}',
+                    'R\$ ${lucroTotal.toStringAsFixed(2)}',
                     style: GoogleFonts.aoboshiOne(
                       color: Colors.white,
                       fontSize: 30,
@@ -56,74 +96,56 @@ class ReportsPage extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.trending_up, color: Colors.green, size: 16),
+                      Icon(variacao >= 0 ? Icons.trending_up : Icons.trending_down, 
+                          color: variacao >= 0 ? Colors.green : Colors.redAccent, size: 16),
                       const SizedBox(width: 4),
                       Text(
-                        '+${vm.variacao.toStringAsFixed(2)}% vs. mês anterior',
-                        style: GoogleFonts.aoboshiOne(color: Colors.green, fontSize: 12),
+                        '${variacao >= 0 ? '+' : ''}${variacao.toStringAsFixed(2)}% de margem',
+                        style: GoogleFonts.aoboshiOne(
+                            color: variacao >= 0 ? Colors.green : Colors.redAccent, fontSize: 12),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
+            
              Text(
-              'Desempenho Mensal',
+              'Visão Geral do Estoque',
               style: GoogleFonts.aoboshiOne(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
             ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2A1845),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: SizedBox(
-                height: 110,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: vm.desempenho.map((d) {
-                    final h = (d['valor'] as double) / 4000 * 80;
-                    final isCurrent = d['mes'] == 'Mar';
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 26,
-                          height: h,
-                          decoration: BoxDecoration(
-                            gradient: isCurrent
-                                ? const LinearGradient(
-                                    colors: [Color(0xFF5000BF), Color(0xFFAE00FF)],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  )
-                                : null,
-                            color: isCurrent ? null : const Color(0xFF3D2560),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          d['mes'] as String,
-                          style: GoogleFonts.aoboshiOne(
-                            color: const Color(0xFF7A6A9A),
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
-              ),
+            const SizedBox(height: 12),
+            
+            _buildInfoCard(
+              'Capital Empatado (Custo do Estoque)', 
+              'R\$ ${valorInvestidoEstoque.toStringAsFixed(2)}', 
+              Icons.inventory_2, 
+              const Color(0xFFBB4FCF)
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
+            
+            _buildInfoCard(
+              'Lucro Projetado (Se vender tudo)', 
+              'R\$ ${lucroProjetado.toStringAsFixed(2)}', 
+              Icons.trending_up, 
+              Colors.greenAccent
+            ),
+            const SizedBox(height: 12),
+            
+            _buildInfoCard(
+              'Volume Total Guardado', 
+              '$totalItensEstoque unidades', 
+              Icons.widgets, 
+              Colors.blueAccent
+            ),
+            const SizedBox(height: 24),
+            
+            //
             Text(
               'Análise Preditiva IA',
               style: GoogleFonts.aoboshiOne(
@@ -133,7 +155,8 @@ class ReportsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            ...vm.insights.map(
+            
+            ...insightsGerados.map(
               (insight) => Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.all(14),
@@ -192,6 +215,46 @@ class ReportsPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  //CARTÕES DO ESTOQUE
+  Widget _buildInfoCard(String title, String value, IconData icon, Color iconColor) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2A1845),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: iconColor, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title, 
+                  style: GoogleFonts.aoboshiOne(color: const Color(0xFF7A6A9A), fontSize: 11)
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value, 
+                  style: GoogleFonts.aoboshiOne(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

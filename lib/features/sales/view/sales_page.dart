@@ -20,7 +20,7 @@ class _SalesPageState extends State<SalesPage> {
     InventoryModel? produtoSelecionado;
     final qtdController = TextEditingController(text: '1');
     final valorController = TextEditingController();
-    final nomeAvulsoController = TextEditingController();
+    final nomeAvulsoController = TextEditingController(); 
     
     TipoMov tipoSelecionado = TipoMov.venda;
     bool isAvulso = false; 
@@ -33,6 +33,32 @@ class _SalesPageState extends State<SalesPage> {
             : produtoSelecionado!.precoCompra;
         valorController.text = (precoCorreto * qtd).toStringAsFixed(2);
       }
+    }
+
+    void mostrarErro(String msg) {
+      showDialog(
+        context: context,
+        builder: (BuildContext dialogCtx) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFF2A1845),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            title: const Row(
+              children: [
+                Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
+                SizedBox(width: 8),
+                Text('Aviso', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            content: Text(msg, style: const TextStyle(color: Colors.white, fontSize: 14)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogCtx),
+                child: const Text('Entendi', style: TextStyle(color: Color(0xFFBB4FCF), fontWeight: FontWeight.bold)),
+              ),
+            ],
+          );
+        },
+      );
     }
 
     showModalBottomSheet(
@@ -87,7 +113,7 @@ class _SalesPageState extends State<SalesPage> {
                               color: isAvulso ? const Color(0xFFBB4FCF) : const Color(0xFF2A1845),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Center(child: Text('Contas', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                            child: const Center(child: Text('Livre / Conta', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
                           ),
                         ),
                       ),
@@ -125,7 +151,7 @@ class _SalesPageState extends State<SalesPage> {
                       controller: nomeAvulsoController,
                       style: const TextStyle(color: Colors.white, fontSize: 14),
                       decoration: InputDecoration(
-                        hintText: 'Ex: Embalagens',
+                        hintText: 'Ex: Conta de Luz, Embalagens...',
                         hintStyle: const TextStyle(color: Color(0xFF7A6A9A)),
                         filled: true,
                         fillColor: const Color(0xFF36285A),
@@ -192,7 +218,7 @@ class _SalesPageState extends State<SalesPage> {
                               border: Border.all(color: tipoSelecionado == TipoMov.venda ? Colors.green : Colors.transparent),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Center(child: Text('Receita (+)', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                            child: const Center(child: Text('Venda (+)', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
                           ),
                         ),
                       ),
@@ -212,7 +238,7 @@ class _SalesPageState extends State<SalesPage> {
                               border: Border.all(color: tipoSelecionado == TipoMov.compra ? Colors.red : Colors.transparent),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Center(child: Text('Despesa (-)', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                            child: const Center(child: Text('Despesa e reposição (-)', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
                           ),
                         ),
                       ),
@@ -226,13 +252,14 @@ class _SalesPageState extends State<SalesPage> {
                       final valor = double.tryParse(valorController.text.replaceAll(',', '.')) ?? 0.0;
                       
                       if (qtd <= 0 || valor <= 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Valores inválidos!'), backgroundColor: Colors.red));
+                        mostrarErro('Verifique os valores informados.\nA quantidade e o valor devem ser maiores que zero.');
                         return;
                       }
+
                       if (isAvulso) {
                         final nome = nomeAvulsoController.text.trim();
                         if (nome.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Digite o nome do item!'), backgroundColor: Colors.red));
+                          mostrarErro('Você esqueceu de digitar o nome da conta ou do item livre.');
                           return;
                         }
 
@@ -246,19 +273,15 @@ class _SalesPageState extends State<SalesPage> {
                         Navigator.pop(context);
                         return;
                       }
-                      
+
                       if (!isAvulso && produtoSelecionado == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Selecione um produto!'), backgroundColor: Colors.red));
+                        mostrarErro('Você não selecionou nenhum produto da sua lista de estoque.');
                         return;
                       }
 
+                      // MENSAGEM ALTERADA CONFORME SOLICITADO:
                       if (tipoSelecionado == TipoMov.venda && produtoSelecionado!.quantidadeAtual < qtd) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Venda bloqueada! Você só tem ${produtoSelecionado!.quantidadeAtual} unidades de ${produtoSelecionado!.nome} no estoque.'), 
-                            backgroundColor: Colors.red
-                          )
-                        );
+                        mostrarErro('Venda bloqueada por falta de estoque');
                         return;
                       }
 

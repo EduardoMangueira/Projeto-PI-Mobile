@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/sales_model.dart';
 
 class SalesViewModel extends ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
   String _filtro = 'Todas';
   String get filtro => _filtro;
 
-  final List<SalesModel> _todas = [
-    SalesModel(id: '1', produtoId: 'p1', item: 'Chaveiro Acrílico', quantidade: 10, valor: -160.0, data: '03 mai, 10:17', tipo: TipoMov.compra),
-    SalesModel(id: '4', produtoId: 'p2', item: 'Caneca Branca', quantidade: 1, valor: 45.0, data: '02 mai, 14:30', tipo: TipoMov.venda),
-  ];
+  List<SalesModel> _todas = [];
+
+  SalesViewModel() {
+    _escutarMovimentacoes();
+  }
+
+  void _escutarMovimentacoes() {
+    _firestore
+        .collection('movimentacoes')
+        .orderBy('timestamp', descending: true) 
+        .snapshots()
+        .listen((snapshot) {
+      _todas = snapshot.docs
+          .map((doc) => SalesModel.fromMap(doc.id, doc.data()))
+          .toList();
+      notifyListeners();
+    });
+  }
 
   List<SalesModel> get movimentacoes {
     if (_filtro == 'Vendas') return _todas.where((m) => m.tipo == TipoMov.venda).toList();
@@ -21,13 +38,13 @@ class SalesViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void adicionarMovimentacao(String produtoId, String item, int quantidade, double valor, TipoMov tipo) {
+  Future<void> adicionarMovimentacao(String produtoId, String item, int quantidade, double valor, TipoMov tipo) async {
     final agora = DateTime.now();
     final meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
     final dataFormatada = '${agora.day.toString().padLeft(2, '0')} ${meses[agora.month - 1]}, ${agora.hour.toString().padLeft(2, '0')}:${agora.minute.toString().padLeft(2, '0')}';
 
-    final novaMovimentacao = SalesModel(
-      id: agora.millisecondsSinceEpoch.toString(),
+    final novaMov = SalesModel(
+      id: '',
       produtoId: produtoId,
       item: item,
       quantidade: quantidade,
@@ -36,8 +53,7 @@ class SalesViewModel extends ChangeNotifier {
       tipo: tipo,
     );
 
-    _todas.insert(0, novaMovimentacao); 
-    notifyListeners();
+    await _firestore.collection('movimentacoes').add(novaMov.toMap());
   }
 
   double get receitaTotal => _todas.where((m) => m.tipo == TipoMov.venda).fold(0.0, (s, i) => s + i.valor.abs());
@@ -53,5 +69,37 @@ class SalesViewModel extends ChangeNotifier {
   double get percentualDespesas {
     if (receitaTotal <= 0) return 0.0;
     return (despesas / receitaTotal) * 100;
+  
+  }
+  List<Map<String, dynamic>> get dadosDoGrafico {
+    final agora = DateTime.now();
+    final mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    
+    List<Map<String, dynamic>> grafico = [];
+    
+    for (int i = 4; i >= 0; i--) {
+      int mesAlvo = agora.month - i;
+      int anoAlvo = agora.year;
+      
+      if (mesAlvo <= 0) {
+        mesAlvo += 12;
+        anoAlvo -= 1;
+      }
+      final nomeMes = mesesNomes[mesAlvo - 1].toLowerCase();
+      
+      final movsDoMes = _todas.where((m) {
+        return m.data.toLowerCase().contains(nomeMes);
+      }).toList();
+
+      final rec = movsDoMes.where((m) => m.tipo == TipoMov.venda).fold(0.0, (s, i) => s + i.valor.abs());
+      final des = movsDoMes.where((m) => m.tipo == TipoMov.compra).fold(0.0, (s, i) => s + i.valor.abs());
+
+      grafico.add({
+        'mes': mesesNomes[mesAlvo - 1],
+        'receita': rec,
+        'despesa': des,
+      });
+    }
+    return grafico;
   }
 }

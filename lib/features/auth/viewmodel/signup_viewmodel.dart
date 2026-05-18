@@ -6,7 +6,7 @@ class SignupViewModel extends ChangeNotifier {
 
   Future<bool> fazerCadastro(String nome, String email, String senha) async {
     try {
-      //O Firebase cria a conta com email e senha
+      //cria a conta com email e senha
       UserCredential credencial = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: senha.trim(),

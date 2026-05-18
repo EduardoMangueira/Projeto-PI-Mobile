@@ -3,7 +3,7 @@ import '../../home/view/home_page.dart';
 import '../../inventory/view/inventory_page.dart';
 import '../../chat/view/chat_page.dart';
 import '../../sales/view/sales_page.dart';
-// import '../../reports/view/reports_page.dart';
+import '../../reports/view/reports_page.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -19,14 +19,17 @@ class _MainShellState extends State<MainShell> {
     const HomePage(),
     const InventoryPage(),
     const SalesPage(),
-    const Center(child: Text('Tela de Relatórios em Construção')),
+    const ReportsPage(),
     const ChatPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
