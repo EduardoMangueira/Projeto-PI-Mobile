@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 14),
             _cardAlerta(context),
             const SizedBox(height: 14),
-            _cardGrafico(vm),
+            _cardGrafico(salesVm),
             const SizedBox(height: 14),
             Text(
               'Últimas Movimentações',
@@ -265,7 +265,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _cardGrafico(HomeViewModel vm) {
+  Widget _cardGrafico(SalesViewModel salesVm) {
+    final dados = salesVm.dadosDoGrafico;
+    
+    double tetoMaximo = 1000.0;
+    for (var m in dados) {
+      if ((m['receita'] as double) > tetoMaximo) tetoMaximo = m['receita'] as double;
+      if ((m['despesa'] as double) > tetoMaximo) tetoMaximo = m['despesa'] as double;
+    }
+    tetoMaximo = tetoMaximo * 1.1; 
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -289,9 +298,10 @@ class HomePage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: vm.grafico.map((m) {
-                final hR = (m['receita'] as double) / 8000 * 70;
-                final hD = (m['despesa'] as double) / 8000 * 70;
+              children: dados.map((m) {
+                final hR = (m['receita'] as double) / tetoMaximo * 70;
+                final hD = (m['despesa'] as double) / tetoMaximo * 70;
+                
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -300,7 +310,7 @@ class HomePage extends StatelessWidget {
                       children: [
                         Container(
                           width: 16,
-                          height: hR,
+                          height: hR > 0 ? hR : 2,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [Color(0xFF5000BF), Color(0xFFAE00FF)],
@@ -313,7 +323,7 @@ class HomePage extends StatelessWidget {
                         const SizedBox(width: 3),
                         Container(
                           width: 16,
-                          height: hD,
+                          height: hD > 0 ? hD : 2,
                           decoration: BoxDecoration(
                             color: const Color(0xFF3D2560),
                             borderRadius: BorderRadius.circular(4),
