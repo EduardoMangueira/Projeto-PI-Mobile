@@ -284,6 +284,8 @@ class _ModalProdutoState extends State<_ModalProduto> {
   late final TextEditingController _qtd;
   late final TextEditingController _min;
 
+  String? _erroMensagem; 
+
   @override
   void initState() {
     super.initState();
@@ -316,18 +318,47 @@ class _ModalProdutoState extends State<_ModalProduto> {
   }
 
   void _salvar() {
+    if (_nome.text.trim().isEmpty ||
+        _categoria.text.trim().isEmpty ||
+        _precoC.text.trim().isEmpty ||
+        _precoV.text.trim().isEmpty ||
+        _qtd.text.trim().isEmpty ||
+        _min.text.trim().isEmpty) {
+      
+      setState(() {
+        _erroMensagem = 'Erro: Todos os campos são obrigatórios.';
+      });
+      FocusScope.of(context).unfocus();
+      return;
+    }
+
+    final qtdAtual = int.tryParse(_qtd.text) ?? 0;
+
+    if (qtdAtual < 0) {
+      setState(() {
+        _erroMensagem = 'Erro: A quantidade não pode ser negativa.';
+      });
+      FocusScope.of(context).unfocus(); 
+      return; 
+    }
+
+    setState(() {
+      _erroMensagem = null;
+    });
+
     final vm = context.read<InventoryViewModel>();
     final novo = InventoryModel(
       id:
           widget.produto?.id ??
           DateTime.now().millisecondsSinceEpoch.toString(),
-      nome: _nome.text,
-      categoria: _categoria.text,
+      nome: _nome.text.trim(),
+      categoria: _categoria.text.trim(),
       precoCompra: double.tryParse(_precoC.text) ?? 0,
       precoVenda: double.tryParse(_precoV.text) ?? 0,
-      quantidadeAtual: int.tryParse(_qtd.text) ?? 0,
+      quantidadeAtual: qtdAtual,
       estoqueMinimo: int.tryParse(_min.text) ?? 0,
     );
+    
     widget.produto == null ? vm.adicionar(novo) : vm.editar(novo);
     Navigator.pop(context);
   }
@@ -396,6 +427,26 @@ class _ModalProdutoState extends State<_ModalProduto> {
             ],
           ),
           const SizedBox(height: 20),
+          
+          if (_erroMensagem != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    _erroMensagem!,
+                    style: const TextStyle(
+                      color: Colors.red, 
+                      fontWeight: FontWeight.bold, 
+                      fontSize: 13
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
           GestureDetector(
             onTap: _salvar,
             child: Container(

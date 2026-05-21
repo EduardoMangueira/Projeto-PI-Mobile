@@ -41,8 +41,13 @@ class InventoryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ENVIAR NOVO PRODUTO
+// ENVIAR NOVO PRODUTO
   Future<void> adicionar(InventoryModel produto) async {
+    if (produto.quantidadeAtual < 0) {
+      debugPrint('Operação bloqueada. O estoque não pode ficar negativo.');
+      return; 
+    }
+
     try {
       await _firestore.collection('produtos').add(produto.toFirestore());
     } catch (e) {
@@ -52,6 +57,11 @@ class InventoryViewModel extends ChangeNotifier {
 
   // ATUALIZAR PRODUTO EXISTENTE
   Future<void> editar(InventoryModel produto) async {
+    if (produto.quantidadeAtual < 0) {
+      debugPrint('Operação bloqueada. O estoque não pode ficar negativo.');
+      return; 
+    }
+
     try {
       await _firestore.collection('produtos').doc(produto.id).update(produto.toFirestore());
     } catch (e) {
