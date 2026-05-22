@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../viewmodel/login_viewmodel.dart';
 
+// CLASSE DA TELA DE LOGIN
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
 

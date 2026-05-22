@@ -5,7 +5,9 @@ import '../viewmodel/sales_viewmodel.dart';
 import '../model/sales_model.dart';
 import '../../inventory/viewmodel/inventory_viewmodel.dart';
 import '../../inventory/model/inventory_model.dart';
+import 'package:projeto_pi_mobile/features/shared/view/stock_app_bar.dart';
 
+// TELA PRINCIPAL QUE EXIBE O HISTÓRICO DE MOVIMENTAÇÕES E GERENCIA O FLUXO DE CAIXA
 class SalesPage extends StatefulWidget {
   const SalesPage({super.key});
 
@@ -13,6 +15,7 @@ class SalesPage extends StatefulWidget {
   State<SalesPage> createState() => _SalesPageState();
 }
 
+// CADASTRO DE UMA NOVA VENDA OU DESPESA
 class _SalesPageState extends State<SalesPage> {
   void _abrirModalNovaMovimentacao() {
     final inventoryVm = context.read<InventoryViewModel>();
@@ -61,6 +64,7 @@ class _SalesPageState extends State<SalesPage> {
       );
     }
 
+    // RENDERIZA O MODAL PERSISTENTE ADAPTADO PARA O TECLADO MOBILE
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -336,11 +340,7 @@ class _SalesPageState extends State<SalesPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF08080C),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF08080C),
-        elevation: 0,
-        title: const Text('Caixa e Vendas', style: TextStyle(color: Colors.white)),
-      ),
+      appBar: const StockAppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -444,6 +444,7 @@ class _SalesPageState extends State<SalesPage> {
           ),
         ],
       ),
+      // BOTÃO FLUTUANTE PARA ADICIONAR LANÇAMENTOS RÁPIDOS
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFFBB4FCF),
         onPressed: _abrirModalNovaMovimentacao,

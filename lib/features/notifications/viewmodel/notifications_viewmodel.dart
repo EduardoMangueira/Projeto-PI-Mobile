@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../model/notifications_model.dart';
 
 class NotificationsViewModel extends ChangeNotifier {
+  // FONTE DE DADOS LOCAL QUE SIMULA O HISTÓRICO DE ALERTAS DO APP
   final List<NotificationsModel> _lista = [
     NotificationsModel(
       titulo:   'Estoque Baixo: Canecas de Alumínio Ouro',
@@ -23,9 +24,12 @@ class NotificationsViewModel extends ChangeNotifier {
     ),
   ];
 
+  // RETORNA UMA CÓPIA DA LISTA PARA PROTEGER A ORIGINAL CONTRA MODIFICAÇÕES DIRETAS NA VIEW
   List<NotificationsModel> get lista     => List.from(_lista);
+  // GETTER QUE FILTRA E CONTA QUANTAS NOTIFICAÇÕES, ALIMENTA O BADGE (BOLINHA VERMELHA) EM TEMPO REAL
   int get naoLidas               => _lista.where((n) => !n.lida).length;
 
+  // PERCORRE TODA A LISTA ALTERANDO O ESTADO DE CADA NOTIFICAÇÃO
   void marcarTodasLidas() {
     for (var n in _lista) {
       n.lida = true;

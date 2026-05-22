@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../app/routes/app_routes.dart';
 
+// CLASSE DA TELA DE SPLASH
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/sales_model.dart';
 
+// VIEWMODEL RESPONSÁVEL POR GERENCIAR AS REGRAS DE NEGÓCIO DE FLUXO DE CAIXA E RELATÓRIOS
 class SalesViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
@@ -10,10 +11,12 @@ class SalesViewModel extends ChangeNotifier {
 
   List<SalesModel> _todas = [];
 
+  // CONSTRUTOR INICIALIZA A ESCUTA ATIVA DO BANCO DE DADOS
   SalesViewModel() {
     _escutarMovimentacoes();
   }
 
+  // CRIA UM CANAL DE COMUNICAÇÃO EM TEMPO REAL (STREAM) COM O CLOUD FIRESTORE
   void _escutarMovimentacoes() {
     _firestore
         .collection('movimentacoes')
@@ -27,17 +30,20 @@ class SalesViewModel extends ChangeNotifier {
     });
   }
 
+  // GETTER QUE APLICA O FILTRO SELECIONADO (VENDAS, DESPESAS OU TODAS) SOBRE O CACHE LOCAL
   List<SalesModel> get movimentacoes {
     if (_filtro == 'Vendas') return _todas.where((m) => m.tipo == TipoMov.venda).toList();
     if (_filtro == 'Despesas') return _todas.where((m) => m.tipo == TipoMov.compra).toList();
     return List.from(_todas);
   }
 
+  // ATUALIZA O FILTRO SELECIONADO REDESENHANDO APENAS A LISTA CORRESPONDENTE
   void setFiltro(String f) {
     _filtro = f;
     notifyListeners();
   }
 
+  // REGISTRA UMA NOVA MOVIMENTAÇÃO FINANCEIRA DIRETAMENTE NO BANCO DE DADOS
   Future<void> adicionarMovimentacao(String produtoId, String item, int quantidade, double valor, TipoMov tipo) async {
     final agora = DateTime.now();
     final meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
@@ -56,6 +62,7 @@ class SalesViewModel extends ChangeNotifier {
     await _firestore.collection('movimentacoes').add(novaMov.toMap());
   }
 
+  // GETTERS ANALÍTICOS DA PARTE FINANCEIRA E RELATÓRIOS
   double get receitaTotal => _todas.where((m) => m.tipo == TipoMov.venda).fold(0.0, (s, i) => s + i.valor.abs());
   double get despesas => _todas.where((m) => m.tipo == TipoMov.compra).fold(0.0, (s, i) => s + i.valor.abs());
   double get lucroLiquido => receitaTotal - despesas;
@@ -71,6 +78,8 @@ class SalesViewModel extends ChangeNotifier {
     return (despesas / receitaTotal) * 100;
   
   }
+
+  // ESTRUTURA DE REPETIÇÃO QUE AGRUPA RECEITAS E DESPESAS PARA ALIMENTAR GRÁFICOS DE BARRAS/LINHAS
   List<Map<String, dynamic>> get dadosDoGrafico {
     final agora = DateTime.now();
     final mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];

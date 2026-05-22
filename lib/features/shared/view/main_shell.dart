@@ -5,6 +5,7 @@ import '../../chat/view/chat_page.dart';
 import '../../sales/view/sales_page.dart';
 import '../../reports/view/reports_page.dart';
 
+// COMPONENTE SHELL QUE SERVE DE BASE PARA A NAVEGAÇÃO PRINCIPAL DO APP
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -13,8 +14,10 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
+  // CONTROLA QUAL ABA ESTÁ ATIVA
   int _currentIndex = 0;
 
+  // LISTA ESTÁTICA QUE ARMAZENA A ORDEM DAS TELAS QUE SERÃO EXIBIDAS
   final List<Widget> _pages = [
     const HomePage(),
     const InventoryPage(),
@@ -30,6 +33,7 @@ class _MainShellState extends State<MainShell> {
         index: _currentIndex,
         children: _pages,
       ),
+      // BARRA DE NAVEGAÇÃO INFERIOR PERSONALIZADA
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

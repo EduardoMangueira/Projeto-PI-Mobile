@@ -1,68 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projeto_pi_mobile/features/shared/view/stock_app_bar.dart';
 import 'package:provider/provider.dart';
 import '../model/inventory_model.dart';
 import '../viewmodel/inventory_viewmodel.dart';
-import '../../notifications/viewmodel/notifications_viewmodel.dart';
-import 'package:projeto_pi_mobile/app/routes/app_routes.dart';
 
+// TELA DE GERENCIAMENTO DO INVENTÁRIO, DESTACANDO ITENS CRÍTICOS NO ESTOQUE
 class InventoryPage extends StatelessWidget {
   const InventoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<InventoryViewModel>();
-    final notifVm = context.watch<NotificationsViewModel>();
-
+    
     return Scaffold(
       backgroundColor: const Color(0xFF08080C),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF09080D),
-        elevation: 0,
-        title: Text(
-          'StockFinance',
-          style: GoogleFonts.aoboshiOne(
-            color: const Color(0xFFBB4FCF),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.white,
-                ),
-                onPressed: () =>
-                    Navigator.pushNamed(context, AppRoutes.notifications),
-              ),
-              if (notifVm.naoLidas > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: Color(0xFF2D1B4E),
-              child: Icon(Icons.person, color: Color(0xFF7A6A9A), size: 18),
-            ),
-          ),
-        ],
-      ),
+      appBar: const StockAppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

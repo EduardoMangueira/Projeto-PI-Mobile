@@ -1,5 +1,6 @@
 enum Remetente { usuario, ia }
 
+// CLASSE MODELO DO CHAT
 class ChatModel {
   final String texto;
   final Remetente remetente;

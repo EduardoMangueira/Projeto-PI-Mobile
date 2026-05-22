@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../features/notifications/viewmodel/notifications_viewmodel.dart';
 import '../../../../app/routes/app_routes.dart';
 
+// COMPONENTE CUSTOMIZADO PARA REUTILIZAÇÃO DA APPBAR
 class StockAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StockAppBar({super.key});
 
@@ -51,12 +52,15 @@ class StockAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.only(right: 12),
-          child: CircleAvatar(
-            radius: 16,
-            backgroundColor: Color(0xFF2D1B4E),
-            child: Icon(Icons.person, color: Color(0xFF7A6A9A), size: 18),
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
+            child: const CircleAvatar(
+              radius: 16,
+              backgroundColor: Color(0xFF2D1B4E),
+              child: Icon(Icons.person, color: Color(0xFF7A6A9A), size: 18),
+            ),
           ),
         ),
       ],

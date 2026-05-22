@@ -7,14 +7,15 @@ import '../features/chat/viewmodel/chat_viewmodel.dart';
 import '../features/home/viewmodel/home_viewmodel.dart';
 import '../features/notifications/viewmodel/notifications_viewmodel.dart';
 import '../features/sales/viewmodel/sales_viewmodel.dart';
-
 import 'routes/app_pages.dart';
+import 'package:projeto_pi_mobile/app/routes/app_routes.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // INJETA OS VIEWMODELS GLOBALMENTE
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
@@ -25,6 +26,7 @@ class AppWidget extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NotificationsViewModel()),
         ChangeNotifierProvider(create: (_) => SalesViewModel()),
       ],
+      // CONFIGURAÇÃO PRINCIPAL DO APP
       child: MaterialApp(
         title: 'Gestão de Sublimação',
         debugShowCheckedModeBanner: false,
@@ -33,7 +35,7 @@ class AppWidget extends StatelessWidget {
           useMaterial3: true,
         ),
         initialRoute: AppRoutes.splash,
-        routes: AppRoutes.routes,
+        routes: AppPages.routes,
       ),
     );
   }

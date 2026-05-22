@@ -1,3 +1,4 @@
+// CLASSE MODELO DE INVENTÁRIO
 class InventoryModel {
   final String id;
   final String nome;
@@ -19,6 +20,7 @@ class InventoryModel {
 
   bool get estoqueCritico => quantidadeAtual <= estoqueMinimo;
 
+  // TRADUZ OS DADOS QUE VÊM DO FIREBASE PARA O APLICATIVO
   factory InventoryModel.fromFirestore(Map<String, dynamic> data, String documentId) {
     return InventoryModel(
       id: documentId,
@@ -31,6 +33,7 @@ class InventoryModel {
     );
   }
 
+  // PREPARA OS DADOS PARA ENVIAR PARA O FIREBASE
   Map<String, dynamic> toFirestore() {
     return {
       'nome': nome,

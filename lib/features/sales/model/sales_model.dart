@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum TipoMov { venda, compra }
 
+// CLASSE MODELO DE VENDAS
 class SalesModel {
   final String id;
   final String produtoId;
