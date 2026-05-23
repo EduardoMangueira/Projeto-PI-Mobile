@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../shared/view/stock_app_bar.dart';
-
 import '../../sales/viewmodel/sales_viewmodel.dart';
 import '../../inventory/viewmodel/inventory_viewmodel.dart';
 
+// TELA DE RELATÓRIOS COM ANÁLISES FINANCEIRAS
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 

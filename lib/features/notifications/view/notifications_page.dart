@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../inventory/viewmodel/inventory_viewmodel.dart';
 
+// PÁGINA DE NOTIFICAÇÕES E ALERTAS DO ESTOQUE
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
 

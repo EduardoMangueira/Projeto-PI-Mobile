@@ -1,5 +1,6 @@
 enum TipoNotif { estoqueBaixo, recordeVendas }
 
+// CLASSE MODELO DE NOTIFICAÇÕES
 class NotificationsModel {
   final String titulo;
   final String mensagem;

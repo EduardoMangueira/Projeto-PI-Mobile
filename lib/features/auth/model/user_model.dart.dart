@@ -1,3 +1,4 @@
+// CLASSE MODELO DO USUÁRIO
 class UsuarioModel {
   final String email;
   final String senha;

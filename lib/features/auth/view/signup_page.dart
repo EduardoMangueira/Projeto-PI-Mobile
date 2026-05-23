@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../viewmodel/signup_viewmodel.dart';
 
+// CLASSE DA TELA DE CADASTRO
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 

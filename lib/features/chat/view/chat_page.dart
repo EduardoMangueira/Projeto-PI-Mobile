@@ -18,6 +18,7 @@ class ChatMessage {
   ChatMessage({required this.text, required this.isUser});
 }
 
+// TELA DE CHAT COM ASSISTENTE INTEGRADO À API DO GEMINI, QUE ANALISA O INVENTÁRIO EM TEMPO REAL E REALIZA A BAIXA AUTOMÁTICA DE VENDAS E COMPRAS
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
 

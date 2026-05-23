@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/inventory_model.dart';
 
+// VIEWMODEL DE GERENCIAMENTO DO INVENTÁRIO
 class InventoryViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<InventoryModel> _produtos = [];
@@ -14,6 +15,7 @@ class InventoryViewModel extends ChangeNotifier {
 
   List<InventoryModel> get produtos => _ultimoTermoBusca.isEmpty ? _produtos : _produtosFiltrados;
 
+  // ESCUTA O FIRESTORE EM TEMPO REAL, ATUALIZA A LISTA LOCAL, MANTÉM O FILTRO DE BUSCA ATIVO E NOTIFICA A UI
   void _ouvirEstoqueRealtime() {
     _firestore.collection('produtos').snapshots().listen((snapshot) {
       _produtos = snapshot.docs.map((doc) {
@@ -28,6 +30,7 @@ class InventoryViewModel extends ChangeNotifier {
     });
   }
 
+  // BUSCAR PRODUTO
   void buscar(String termo) {
     _ultimoTermoBusca = termo.toLowerCase();
     if (_ultimoTermoBusca.isEmpty) {
