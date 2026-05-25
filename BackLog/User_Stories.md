@@ -1,8 +1,8 @@
 ## User Stories
 
-### 1. Registro de Operação por Voz/Texto
+### 1. Registro de Operação por Texto
 Como um usuário para facilitar o processo.
-Eu quero Ditar/Escrever uma frase simples de venda.
+Eu quero escrever uma frase simples de venda.
 Para que a IA analise a venda, e de baixa no estoque automaticamente e paralelamente com analisar os dados e adiciona-los a dashboard.
 
 ### 2. Notificações de Estoque
