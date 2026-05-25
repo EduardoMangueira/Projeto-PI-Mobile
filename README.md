@@ -8,7 +8,7 @@ O StockFinance é uma solução mobile desenvolvida para automatizar e otimizar 
 Empresas de sublimação lidam com insumos fracionados (tintas, papéis, tempo de prensa) e produtos variados. A ausência de um controle rigoroso gera dificuldade na precificação, perda de insumos e falta de clareza sobre o lucro real.
 
 ### Solução
-Um aplicativo intuitivo que utiliza Processamento de Linguagem Natural (IA) para registro de vendas por voz/texto, realiza a baixa automática de insumos e gera dashboards financeiros em tempo real.
+Um aplicativo intuitivo que utiliza Processamento de Linguagem Natural (IA) para registro de vendas por texto, realiza a baixa automática de insumos e gera dashboards financeiros em tempo real.
 
 ## 📝 Backlog de Épicos
 - [x] Criação do Banco de Dados para produtos finais e insumos(custos).
