@@ -12,8 +12,8 @@ Sistema deve registrar automáticamente quando houver uma venda, diminuindo a qu
 ### RF04 — Calculo de Lucro
 O sitema deve armazenar a regra de negócio, para colocar no relátório final.
 
-### RF05 — Ideia -> Converter aúdio(IA) em escrita
-O funcionário dita a venda, e a IA converte em texto, facilitando a transcrição para o relatório final.
+### RF05 — Converter texto(IA) em escrita
+O funcionário escreve a venda, e a IA analisa a venda, facilitando a transcrição para o relatório final.
 
 ### RF06 — Cadastro de Usuário
 O sistema deve permitir que o próprio usuário realize seu cadastro informando e-mail, senha, nome de usuário e telefone.
