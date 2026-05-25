@@ -22,7 +22,7 @@ class _TelaLoginState extends State<TelaLogin> {
       _isLoading = true;
     });
 
-    bool sucesso = await _viewModel.fazerLogin(
+    String? erro = await _viewModel.fazerLogin(
       _usuarioController.text,
       _senhaController.text,
     );
@@ -33,14 +33,16 @@ class _TelaLoginState extends State<TelaLogin> {
 
     if (!mounted) return;
 
-    if (sucesso) {
+    if (erro == null) {
+      // Sucesso no login
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login realizado com sucesso!'), backgroundColor: Colors.green),
       );
       Navigator.pushReplacementNamed(context, '/home');
     } else {
+      // Falha (mostra a mensagem específica enviada pelo ViewModel)
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuário ou senha incorretos.'), backgroundColor: Colors.red),
+        SnackBar(content: Text(erro), backgroundColor: Colors.red),
       );
     }
   }
