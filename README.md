@@ -13,7 +13,7 @@ Um aplicativo intuitivo que utiliza Processamento de Linguagem Natural (IA) para
 ## 📝 Backlog de Épicos
 - [x] Criação do Banco de Dados para produtos finais e insumos(custos).
 - [x] Desenvolver a Dashboard com os dados principais.
-- [ ] Contagem do estoque para adição no banco. 
+- [x] Contagem do estoque para adição no banco. 
 - [x] Implementar a regra de negócio(insumos + custo total -> Venda - > Lucro).
 - [x] Página de login (Usuário e Senha).
 - [x] Iniciar processo de integração da API de LLM.
