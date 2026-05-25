@@ -2,7 +2,7 @@
 
 ## Diagrama de Casos de Uso — Geral
 
-<img width="795" height="1128" alt="Diagrama_Geral_Sistema" src="https://github.com/user-attachments/assets/96e1c0fb-8cdb-4943-9800-ce7662eb1e14" />
+<img width="446" height="1146" alt="image" src="https://github.com/user-attachments/assets/892faec7-2896-4f84-a765-26b11c0585f0" />
 
 ## Diagrama de Classes de Domínio
 
