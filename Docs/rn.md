@@ -17,7 +17,6 @@ Cada produto deve ter um estoque mínimo definido no cadastro; ao atingi-lo, o i
 
 ### RN06 — Categorias de Movimentação
 Toda movimentação deve ser classificada para permitir o filtro na tela de histórico.
-As Regras de Negócio (RN) são fundamentais porque definem as diretrizes que o software deve seguir para ser fiel ao mundo real. Suas RNs atuais cuidam bem da segurança e do estoque básico, mas para um negócio de sublimação, precisamos de regras que blindem o cálculo financeiro e a integridade dos dados de produção.
 
 ### RN07 — Baixa Proporcional de Insumos
 Ao registrar a venda de um produto final, o sistema deve subtrair do estoque não apenas o item vendido, mas também a quantidade proporcional de insumos (tinta, papel) definida na ficha técnica do produto.
