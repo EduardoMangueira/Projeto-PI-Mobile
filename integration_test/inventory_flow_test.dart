@@ -4,114 +4,87 @@ import 'package:integration_test/integration_test.dart';
 import 'package:projeto_pi_mobile/main.dart' as app;
 
 void main() {
-  // Inicializa o canal de cormunicação com o dispositivo físico
+  // Inicialização obrigatória do vínculo para execução de testes de integração reais
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('Módulo de Estoque — Fluxo de Integração E2E (ISO/IEC/IEEE 29119-2)', () {
+  group('Testes de Integração Ponta a Ponta - Módulo de Estoque (Inventory)', () {
     
-    setUpAll(() async {
+    testWidgets('TC01 - Cadastro de insumo completo e válido com persistência', (WidgetTester tester) async {
+      // Inicializa a aplicação conectada ao Firebase de teste
       app.main();
-    });
+      await tester.pumpAndSettle();
 
-    testWidgets('TC01 & TC04 — Fluxo Completo de Cadastro Válido e Stream Realtime', (WidgetTester tester) async {
-      // 1. BARREIRA DE INICIALIZAÇÃO DINÂMICA
-      // Espera até 10 segundos até o Firebase carregar e a tela inicial real renderizar
-      bool appCarregou = false;
-      for (int i = 0; i < 20; i++) {
-        await tester.pump(const Duration(milliseconds: 500));
-        // Se encontrar qualquer texto comum do seu app ou a barra de navegação, interrompe a espera
-        if (find.text('Estoque').evaluate().isNotEmpty || find.byIcon(Icons.inventory).evaluate().isNotEmpty) {
-          appCarregou = true;
-          break;
-        }
-      }
+      // Navega até a tela de inventário/estoque
+      final Finder inventoryTab = find.byKey(const Key('inventory_nav_btn'));
+      await tester.tap(inventoryTab);
+      await tester.pumpAndSettle();
 
-      // Se mesmo após 10 segundos o hardware não renderizar, lança um aviso detalhado
-      expect(appCarregou, true, reason: 'O aplicativo ficou preso na tela "Test starting..." e não carregou a interface real a tempo.');
+      // Toca no botão para abrir o formulário de novo produto
+      final Finder addProductFab = find.byKey(const Key('add_product_fab'));
+      await tester.tap(addProductFab);
+      await tester.pumpAndSettle();
 
-      // 2. Navegação para a aba de estoque/inventário de forma resiliente
-      final Finder abaInventario = find.byKey(const Key('inventory_nav_btn'));
-      if (abaInventario.evaluate().isNotEmpty) {
-        await tester.tap(abaInventario.first);
-      } else {
-        final Finder iconeInventario = find.byIcon(Icons.inventory);
-        if (iconeInventario.evaluate().isNotEmpty) {
-          await tester.tap(iconeInventario.first);
-        } else {
-          await tester.tap(find.text('Estoque').first);
-        }
-      }
-      await tester.pump(const Duration(milliseconds: 600));
+      // Injeta os dados válidos respeitando os 6 atributos obrigatórios do RF01
+      await tester.enterText(find.byKey(const Key('input_nome')), 'Caneca de Cerâmica Branca');
+      await tester.enterText(find.byKey(const Key('input_categoria')), 'Sublimação');
+      await tester.enterText(find.byKey(const Key('input_qtd_atual')), '100');
+      await tester.enterText(find.byKey(const Key('input_qtd_minima')), '10');
+      await tester.enterText(find.byKey(const Key('input_preco_compra')), '12.50');
+      await tester.enterText(find.byKey(const Key('input_preco_venda')), '35.00');
+      await tester.pumpAndSettle();
 
-      // 3. Abre o formulário de cadastro de produtos (+)
-      final Finder botaoAdicionar = find.byIcon(Icons.add).first;
-      await tester.tap(botaoAdicionar);
-      await tester.pump(const Duration(milliseconds: 600));
-
-      // 4. Injeção sequencial segura com base nos TextFields visíveis
-      final Finder camposTexto = find.byType(TextField);
-      expect(camposTexto, findsAtLeastNWidgets(1), reason: 'Campos de texto do formulário não encontrados.');
-
-      await tester.enterText(camposTexto.at(0), 'Caneca de Cerâmica Branca'); // Nome
-      await tester.enterText(camposTexto.at(1), 'Sublimação');                 // Categoria
-      await tester.enterText(camposTexto.at(2), '100');                         // Quantidade Atual
-      await tester.enterText(camposTexto.at(3), '10');                          // Quantidade Mínima
-      await tester.enterText(camposTexto.at(4), '12.50');                       // Preço de Compra
-      await tester.enterText(camposTexto.at(5), '35.00');                       // Preço de Venda
-      await tester.pump(); 
-
-      // 5. Aciona o salvamento do formulário
-      Finder botaoSalvar = find.byKey(const Key('btn_salvar_produto'));
-      if (botaoSalvar.evaluate().isEmpty) {
-        botaoSalvar = find.text('Salvar');
-      }
-      if (botaoSalvar.evaluate().isEmpty) {
-        botaoSalvar = find.text('Registrar');
-      }
-
-      await tester.tap(botaoSalvar.first);
+      // Dispara a ação de salvamento
+      final Finder saveButton = find.byKey(const Key('btn_salvar_produto'));
+      await tester.tap(saveButton);
       
-      // Janela de tempo para persistência na nuvem real do Firebase Firestore
-      await tester.pump(const Duration(seconds: 3));
+      // Aguarda o processamento da requisição de rede e retorno da navegação
+      await tester.pumpAndSettle();
 
-      // ASSERT (TC01 / TC04) — Confirma se o item reativo aparece na listagem principal
+      // Asserção: Verifica se o produto foi salvo e consta na listagem atualizada via Stream
       expect(find.text('Caneca de Cerâmica Branca'), findsOneWidget);
     });
 
-    testWidgets('TC02 — Bloqueio de submissão para campos obrigatórios vazios', (WidgetTester tester) async {
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+    testWidgets('TC02 - Cadastro com omissão de campos obrigatórios (Bloqueio Local)', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
 
-      // Força retorno ao formulário se necessário clicando no botão de adicionar (+)
-      final Finder botaoAdicionar = find.byIcon(Icons.add);
-      if (botaoAdicionar.evaluate().isNotEmpty) {
-        await tester.tap(botaoAdicionar.first);
-        await tester.pump(const Duration(milliseconds: 600));
-      }
+      // Navega e abre o formulário
+      await tester.tap(find.byKey(const Key('inventory_nav_btn')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('add_product_fab')));
+      await tester.pumpAndSettle();
 
-      // Preenche apenas um campo de texto simulando entrada inválida/incompleta
-      final Finder camposTexto = find.byType(TextField);
-      await tester.enterText(camposTexto.first, 'Camiseta Poliéster');
-      await tester.pump();
+      // Preenche apenas alguns campos, deixando outros obrigatórios vazios
+      await tester.enterText(find.byKey(const Key('input_nome')), 'Camiseta Poliéster');
+      await tester.enterText(find.byKey(const Key('input_categoria')), 'Vestuário');
+      await tester.enterText(find.byKey(const Key('input_qtd_atual')), '50');
+      // Quantidade mínima, preço de compra e preço de venda deixados em branco
+      await tester.pumpAndSettle();
 
-      // Envia os dados incompletos
-      Finder botaoSalvar = find.byKey(const Key('btn_salvar_produto'));
-      if (botaoSalvar.evaluate().isEmpty) {
-        botaoSalvar = find.text('Salvar');
-      }
-      if (botaoSalvar.evaluate().isEmpty) {
-        botaoSalvar = find.text('Registrar');
-      }
+      // Tenta salvar o formulário incompleto
+      await tester.tap(find.byKey(const Key('btn_salvar_produto')));
+      await tester.pumpAndSettle();
 
-      await tester.tap(botaoSalvar.first);
-      await tester.pump(const Duration(milliseconds: 600));
+      // Asserção: O app deve exibir a mensagem de erro em um SnackBar ou componente de alerta
+      expect(find.text('Preencha todos os campos obrigatórios'), findsOneWidget);
+    });
 
-      // ASSERT — Captura se o sistema barrou a operação através do feedback visual mapeado
-      final erroVisivel = find.text('Preencha todos os campos obrigatórios').evaluate().isNotEmpty;
-      final snackBarVisivel = find.byType(SnackBar).evaluate().isNotEmpty;
-      
-      expect(erroVisivel || snackBarVisivel, true, 
-          reason: 'O aplicativo deveria apresentar uma mensagem contendo o alerta de campos obrigatórios.');
+    testWidgets('TC03 - Baixa de estoque além do limite (Impedir Estoque Negativo)', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      // Acessa a página de inventário
+      await tester.tap(find.byKey(const Key('inventory_nav_btn')));
+      await tester.pumpAndSettle();
+
+      // Tenta acionar uma redução de estoque drástica usando botões de ajuste rápido
+      // Supondo um item com quantidade menor do que o decremento solicitado
+      final Finder decrementBtn = find.byKey(const Key('btn_decrementar_lote')).first;
+      await tester.tap(decrementBtn);
+      await tester.pumpAndSettle();
+
+      // Asserção: Garante o bloqueio visual e impede atualização inválida
+      expect(find.text('Estoque insuficiente'), findsOneWidget);
     });
   });
 }
